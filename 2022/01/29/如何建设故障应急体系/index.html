@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>如何建设故障应急体系 | Hexo</title>
+
+
+
+    <link rel="icon" href="/bitbug_favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">奔跑的灰熊</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">奔跑的灰熊</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">如何建设故障应急体系</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 29, 2022&nbsp;&nbsp;19:38:55</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <table>
+<thead>
+<tr>
+<th align="center">版本号</th>
+<th align="center">作者</th>
+<th align="center">备注</th>
+<th align="center">修订日期</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">1.001</td>
+<td align="center">kriswu</td>
+<td align="center">无</td>
+<td align="center">2022.1.29</td>
+</tr>
+</tbody></table>
+<h4 id="故障相关"><a href="#故障相关" class="headerlink" title="故障相关"></a>故障相关</h4><p>故障的“发生–定位–解决–复盘–改进” 是一个完整的故障处理流程，通常来说故障的发现主要是两个渠道，最好是通过监控发现，其次是用户的上报；故障应急的处理流程是否完善决定了在应急时对影响面的可控度，以我之前的公司为例，能够在监控发现后1分钟内通知相关方并拉群做应急处理，目标上追求5分钟快速定位 + 10 分钟快速恢复。</p>
+<p>因此需要从应景处理开始到 <strong>故障定位</strong> 以及 <strong>故障解决</strong> 这中间沉淀一些时间经验和常见措施，做到有章可循。</p>
+<h6 id="故障定位"><a href="#故障定位" class="headerlink" title="故障定位"></a>故障定位</h6><p>故障的直接诱因通常有三大类 ： 变更 、上下游依赖 、应用容量 。以过往经验，变更类故障可占 80% 以上，其他两类占比约为各10% 。因此从概率上来说第一时间是要查看近期线上变更。</p>
+<h6 id="故障恢复"><a href="#故障恢复" class="headerlink" title="故障恢复"></a>故障恢复</h6><p>故障应急以恢复业务可用性为第一优先级，详细定位、定责、改进为第二优先级。目前主要的几个恢复手段</p>
+<p>1、从近期变更上看，通常是下游服务地址修改、vip 修改等（调用方没有用域名，把服务放ip 写死在配置里），这种的需要客户端快速发版更新，后续优化调用配置</p>
+<p>2、上游依赖没有变更的，报错不明晰的。可以先做重启处理，在80% 报错不明晰时重启可以解决。过程中需要对现场留存，以供后续排查。</p>
+<p>3、重启没有解决的，近期没有变更的。这种影响面很可能扩大，就需要先做限流、降级处理，微服务代码设计阶段业务都会预留开关，做相对的降级预案 。</p>
+<p>4、降级后，尽快做排查是否是bug ,然后做发版修复。这种是最耗时，发布时仍要做剪短的灰度过程。</p>
+<h6 id="业务变更规则"><a href="#业务变更规则" class="headerlink" title="业务变更规则"></a>业务变更规则</h6><p>1、变更基本原则 – 技术风险三板斧  ：<code>可回滚</code>、<code>可监测</code>、<code>可灰度</code></p>
+<p>​        可回滚：回滚流程要通畅，日常演练很重要</p>
+<p>​        可监测：完善的监控报警机制</p>
+<p>​        可灰度：一切变更以稳定性为优先级，一切变更均需要进行灰度验证</p>
+<p>​                    ①提供灰度环境，做引流验证，1% ~ 5% </p>
+<p>​                    ②发布策略上使用 beta 发布、分组发布 ，做到逐步控制、风险可控，精细化发布流程</p>
+<p>2、建立故障等级 P1~ P4,P4 为最高等级；根据故障等级，确立应急小组，各方确定到人。</p>
+<table>
+<thead>
+<tr>
+<th align="center">大类</th>
+<th align="center">子类</th>
+<th align="center">小类</th>
+<th align="center">描述</th>
+<th align="center">保障时间</th>
+<th align="left">影响面</th>
+<th align="center">P4</th>
+<th align="center">P3</th>
+<th align="center">P2</th>
+<th align="center">P1</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">XXXX</td>
+<td align="center">XXXX</td>
+<td align="center">XXXX</td>
+<td align="center">XXXX</td>
+<td align="center">7*24</td>
+<td align="left">页面访问成功率持续下跌50%及以上</td>
+<td align="center">—</td>
+<td align="center">—</td>
+<td align="center">&lt; 60min</td>
+<td align="center">&gt;20min</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">页面访问成功率持续下跌30%及以上</td>
+<td align="center">—</td>
+<td align="center">&lt;120min</td>
+<td align="center">&gt;120min</td>
+<td align="center">—</td>
+</tr>
+<tr>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="center"></td>
+<td align="left">页面访问成功率持续下跌30%及以下</td>
+<td align="center">&gt;120min</td>
+<td align="center">—</td>
+<td align="center"></td>
+<td align="center">—</td>
+</tr>
+</tbody></table>
+<p>3、变更通知机制：</p>
+<p>​    3.1关键相关业务方大群通知:</p>
+<p>​        1）变更时间  </p>
+<p>​        2）影响范围  </p>
+<p>​        3）需要关注的人  </p>
+<p>​        4）应急方案是否验证 </p>
+<p>​    3.2 挂通告</p>
+<p>4、故障解决原则：以恢复业务为第一 ，问题定位为第二</p>
+<p>5、故障复盘文档格式</p>
+<p>​    【问题现象】  XXXXX</p>
+<p>​    【影响范围】  XXXXX</p>
+<p>​    【问题根因】  XXXXX</p>
+<p>​    【处理人】      XXXXX</p>
+<p>​    【时间节点】   XXXXX</p>
+<p>​    【后续action】XXXXX</p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E8%BF%90%E7%BB%B4%E8%A7%84%E8%8C%83%E5%BB%BA%E8%AE%BE/"># 运维规范建设</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/01/30/%E5%A6%82%E4%BD%95%E4%B8%BA-Kubernetes-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E5%9C%B0%E5%8D%87%E7%BA%A7/">如何为 Kubernetes 实现原地升级</a>
+            
+            
+            <a class="next" rel="next" href="/2022/01/24/%E5%B7%A5%E4%BD%9C%E4%B8%AD%E5%A6%82%E4%BD%95%E5%81%9A%E5%A5%BD%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/">工作中如何做好技术积累</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>　
+<script>
+!
+function() {
+    function n(n, e, t) {
+        return n.getAttribute(e) || t
+    }
+    function e(n) {
+        return document.getElementsByTagName(n)
+    }
+    function t() {
+        var t = e("script"),
+        o = t.length,
+        i = t[o - 1];
+        return {
+            l: o,
+            z: n(i, "zIndex", -1),
+            o: n(i, "opacity", .5),
+            c: n(i, "color", "0,0,0"),
+            n: n(i, "count", 99)
+        }
+    }
+    function o() {
+        a = m.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+        c = m.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+    }
+    function i() {
+        r.clearRect(0, 0, a, c);
+        var n, e, t, o, m, l;
+        s.forEach(function(i, x) {
+            for (i.x += i.xa, i.y += i.ya, i.xa *= i.x > a || i.x < 0 ? -1 : 1, i.ya *= i.y > c || i.y < 0 ? -1 : 1, r.fillRect(i.x - .5, i.y - .5, 1, 1), e = x + 1; e < u.length; e++) n = u[e],
+            null !== n.x && null !== n.y && (o = i.x - n.x, m = i.y - n.y, l = o * o + m * m, l < n.max && (n === y && l >= n.max / 2 && (i.x -= .03 * o, i.y -= .03 * m), t = (n.max - l) / n.max, r.beginPath(), r.lineWidth = t / 2, r.strokeStyle = "rgba(" + d.c + "," + (t + .2) + ")", r.moveTo(i.x, i.y), r.lineTo(n.x, n.y), r.stroke()))
+        }),
+        x(i)
+    }
+    var a, c, u, m = document.createElement("canvas"),
+    d = t(),
+    l = "c_n" + d.l,
+    r = m.getContext("2d"),
+    x = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+    function(n) {
+        window.setTimeout(n, 1e3 / 45)
+    },
+    w = Math.random,
+    y = {
+        x: null,
+        y: null,
+        max: 2e4
+    };
+    m.id = l,
+    m.style.cssText = "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o,
+    e("body")[0].appendChild(m),
+    o(),
+    window.onresize = o,
+    window.onmousemove = function(n) {
+        n = n || window.event,
+        y.x = n.clientX,
+        y.y = n.clientY
+    },
+    window.onmouseout = function() {
+        y.x = null,
+        y.y = null
+    };
+    for (var s = [], f = 0; d.n > f; f++) {
+        var h = w() * a,
+        g = w() * c,
+        v = 2 * w() - 1,
+        p = 2 * w() - 1;
+        s.push({
+            x: h,
+            y: g,
+            xa: v,
+            ya: p,
+            max: 6e3
+        })
+    }
+    u = s.concat([y]),
+    setTimeout(function() {
+        i()
+    },
+    100)
+} ();
+</script>
+</html>
+	

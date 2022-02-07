@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>CentOS7 kubeadm快速安装Kubernetes集群 | Hexo</title>
+
+
+
+    <link rel="icon" href="/bitbug_favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">奔跑的灰熊</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">奔跑的灰熊</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">CentOS7 kubeadm快速安装Kubernetes集群</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">February 2, 2022&nbsp;&nbsp;22:42:00</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <p>本文安装Kubenetes version=1.16.0</p>
+<h1 id="硬件环境"><a href="#硬件环境" class="headerlink" title="硬件环境"></a>硬件环境</h1><p>使用三台vmware虚拟机，配置网络，并保证可以联网。</p>
+<ul>
+<li>k8s-master 4G 2核 CentOS7  192.168.0.108</li>
+<li>k8s-node1 2G 2核 CentOS7   192.168.0.100</li>
+<li>k8s-node2 2G 2核 CentOS7 </li>
+<li>写死机器ip</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> more /etc/sysconfig/network-scripts/ifcfg-ens33</span></span><br><span class="line"></span><br><span class="line">TYPE=&quot;Ethernet&quot;</span><br><span class="line">PROXY_METHOD=&quot;none&quot;</span><br><span class="line">BROWSER_ONLY=&quot;no&quot;</span><br><span class="line">BOOTPROTO=&quot;static&quot;   # dhcp 修改成 static</span><br><span class="line">DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV4_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6INIT=&quot;yes&quot;</span><br><span class="line">IPV6_AUTOCONF=&quot;yes&quot;</span><br><span class="line">IPV6_DEFROUTE=&quot;yes&quot;</span><br><span class="line">IPV6_FAILURE_FATAL=&quot;no&quot;</span><br><span class="line">IPV6_ADDR_GEN_MODE=&quot;stable-privacy&quot;</span><br><span class="line">NAME=&quot;ens33&quot;</span><br><span class="line">UUID=&quot;512da8e0-1964-49aa-9581-341bee9f4027&quot;</span><br><span class="line">DEVICE=&quot;ens33&quot;</span><br><span class="line">ONBOOT=&quot;yes&quot;</span><br><span class="line">ZONE=public</span><br><span class="line">IPADDR=192.168.0.108</span><br><span class="line">NETMASK=255.255.255.0</span><br><span class="line">GATEWAY=192.168.0.1</span><br><span class="line">DNS=114.114.114.114</span><br></pre></td></tr></table></figure>
+
+<h1 id="主机划分"><a href="#主机划分" class="headerlink" title="主机划分"></a>主机划分</h1><ul>
+<li>k8s-master作为集群管理节点：etcd kubeadm kube-apiserver kube-scheduler kube-controller-manager kubelet flanneld docker</li>
+<li>k8s-node1作为工作节点：kubeadm kubelet flanneld docker</li>
+<li>k8s-node2作为工作节点：kubeadm kubelet flanneld docker</li>
+</ul>
+<h1 id="准备工作"><a href="#准备工作" class="headerlink" title="准备工作"></a>准备工作</h1><p>安装必要的rpm软件：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum install -y wget vim net-tools epel-release</span><br></pre></td></tr></table></figure>
+
+<p>关闭防火墙</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">systemctl disable firewalld &amp;&amp; systemctl stop firewalld</span><br></pre></td></tr></table></figure>
+
+<p>关闭selinux</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> 临时禁用</span></span><br><span class="line">selinux setenforce 0 </span><br><span class="line"><span class="meta">#</span><span class="bash"> 永久关闭 修改/etc/sysconfig/selinux文件设置</span> </span><br><span class="line">sed -i &#x27;s/SELINUX=permissive/SELINUX=disabled/&#x27; /etc/sysconfig/selinux </span><br><span class="line">sed -i &quot;s/SELINUX=enforcing/SELINUX=disabled/g&quot; /etc/selinux/config</span><br></pre></td></tr></table></figure>
+
+<p>禁用交换分区</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">swapoff -a</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"> 永久禁用，打开/etc/fstab注释掉swap那一行。</span></span><br><span class="line">sed -i &#x27;s/.*swap.*/#&amp;/&#x27; /etc/fstab</span><br></pre></td></tr></table></figure>
+
+<p>修改 /etc/hosts</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt;&gt; /etc/host</span><br><span class="line"></span><br><span class="line">192.168.0.108 k8s-master</span><br><span class="line">192.168.0.100 k8s-node1</span><br><span class="line">XXXXXX		  k8s-node2</span><br><span class="line">EOF</span><br></pre></td></tr></table></figure>
+
+<p>修改内核参数</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">cat &lt;&lt;EOF &gt;  /etc/sysctl.d/k8s.conf</span><br><span class="line">net.bridge.bridge-nf-call-ip6tables = 1</span><br><span class="line">net.bridge.bridge-nf-call-iptables = 1</span><br><span class="line">EOF</span><br><span class="line">sysctl --system</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装docker18-03-0-ce"><a href="#安装docker18-03-0-ce" class="headerlink" title="安装docker18.03.0-ce"></a>安装docker18.03.0-ce</h1><h2 id="配置yum源"><a href="#配置yum源" class="headerlink" title="配置yum源"></a>配置yum源</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置默认源</span></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 备份</span></span></span><br><span class="line">mv /etc/yum.repos.d/CentOS-Base.repo /etc/yum.repos.d/CentOS-Base.repo.backup</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 下载阿里源</span></span></span><br><span class="line">wget -O /etc/yum.repos.d/CentOS-Base.repo http://mirrors.aliyun.com/repo/Centos-7.repo</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 刷新</span></span></span><br><span class="line">yum makecache fast</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 配置k8s源</span></span></span><br><span class="line">cat &lt;&lt;EOF &gt; /etc/yum.repos.d/kubernetes.repo</span><br><span class="line">[kubernetes]</span><br><span class="line">name=Kubernetes</span><br><span class="line">baseurl=https://mirrors.aliyun.com/kubernetes/yum/repos/kubernetes-el7-x86_64</span><br><span class="line">enabled=1</span><br><span class="line">gpgcheck=0</span><br><span class="line">EOF</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 重建yum缓存</span></span></span><br><span class="line">yum clean all</span><br><span class="line">yum makecache fast</span><br><span class="line">yum -y update</span><br></pre></td></tr></table></figure>
+
+<h2 id="安装docker"><a href="#安装docker" class="headerlink" title="安装docker"></a>安装docker</h2><p>下载docker的yum源文件</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">yum -y install yum-utils device-mapper-persistent-data lvm2</span><br><span class="line">yum-config-manager --add-repo http://mirrors.aliyun.com/docker-ce/linux/centos/docker-ce.repo</span><br></pre></td></tr></table></figure>
+
+<p>这里指定docker版本，可以先查看支持的版本</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# yum list docker-ce --showduplicates |sort -r  </span><br><span class="line">最新版本为 20.10.9 指定 18.03.0</span><br><span class="line">[root@localhost ~]# yum -y install docker-ce-18.03.0.ce-1.el7.centos</span><br><span class="line"></span><br><span class="line">systemctl enable docker</span><br><span class="line">systemctl start docker</span><br></pre></td></tr></table></figure>
+
+<p><strong>docker安装必须匹配k8s的版本，docker与k8s版本兼容问题解决，如何查看kubenetes 与docker 版本对照呢 ，如下：</strong></p>
+<p> 进入<a target="_blank" rel="noopener" href="https://github.com/kubernetes/kubernetes/tree/master/CHANGELOG">CHANGELOG </a>查看对应版本</p>
+<p><img src="/images/image-20220203212825294.png" alt="image-20220203212825294"></p>
+<p><img src="/images/image-20220203213004958.png" alt="image-20220203213004958"></p>
+<h2 id="修改docker的启动参数"><a href="#修改docker的启动参数" class="headerlink" title="修改docker的启动参数"></a>修改docker的启动参数</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">cat &gt; /etc/docker/daemon.json &lt;&lt;EOF</span><br><span class="line">&#123;</span><br><span class="line">  &quot;registry-mirrors&quot;: [&quot;https://7sf4w53z.mirror.aliyuncs.com&quot;],</span><br><span class="line">  &quot;exec-opts&quot;: [&quot;native.cgroupdriver=systemd&quot;],</span><br><span class="line">  &quot;log-driver&quot;: &quot;json-file&quot;,</span><br><span class="line">  &quot;log-opts&quot;: &#123;</span><br><span class="line">    &quot;max-size&quot;: &quot;100m&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;storage-driver&quot;: &quot;overlay2&quot;,</span><br><span class="line">  &quot;storage-opts&quot;: [</span><br><span class="line">    &quot;overlay2.override_kernel_check=true&quot;</span><br><span class="line">  ]</span><br><span class="line">&#125;</span><br><span class="line">EOF</span><br><span class="line"></span><br><span class="line">systemctl restart docker</span><br></pre></td></tr></table></figure>
+
+<h1 id="安装k8s"><a href="#安装k8s" class="headerlink" title="安装k8s"></a>安装k8s</h1><h2 id="管理节点配置"><a href="#管理节点配置" class="headerlink" title="管理节点配置"></a>管理节点配置</h2><p>先在k8s-master上安装管理节点</p>
+<h3 id="下载kubeadm，kubelet"><a href="#下载kubeadm，kubelet" class="headerlink" title="下载kubeadm，kubelet"></a>下载kubeadm，kubelet</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash">查看软件版本</span></span><br><span class="line"></span><br><span class="line">yum list --showduplicates kubeadm --disableexcludes=kubernetes</span><br><span class="line"></span><br><span class="line">--disableexcludes=kubernetes		#表示只用kubernetes的yum仓库</span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">指定安装，**这里一定需要注意，不然后面 `kubeadm init` 会出现问题**</span></span><br><span class="line"></span><br><span class="line">yum -y install kubeadm-1.16.0-0 kubelet-1.16.0-0</span><br><span class="line"></span><br><span class="line">kubeadm version --output json   #查看安装的版本</span><br></pre></td></tr></table></figure>
+
+<h3 id="初始化kubeadm"><a href="#初始化kubeadm" class="headerlink" title="初始化kubeadm"></a>初始化kubeadm</h3><p>这里不直接初始化，因为国内用户不能直接拉取相关的镜像，所以这里想查看需要的镜像版本</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# kubeadm config images list</span><br><span class="line">I0204 01:45:36.464308   21358 version.go:251] remote version is much newer: v1.23.3; falling back to: stable-1.16</span><br><span class="line">k8s.gcr.io/kube-apiserver:v1.16.15</span><br><span class="line">k8s.gcr.io/kube-controller-manager:v1.16.15</span><br><span class="line">k8s.gcr.io/kube-scheduler:v1.16.15</span><br><span class="line">k8s.gcr.io/kube-proxy:v1.16.15</span><br><span class="line">k8s.gcr.io/pause:3.1</span><br><span class="line">k8s.gcr.io/etcd:3.3.15-0</span><br><span class="line">k8s.gcr.io/coredns:1.6.2</span><br></pre></td></tr></table></figure>
+
+<p>根据需要的版本，直接拉取国内镜像，并修改tag</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span><span class="bash"> vim kubeadm.sh</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash">!/bin/bash</span></span><br><span class="line"><span class="meta"></span></span><br><span class="line"><span class="meta">#</span><span class="bash"><span class="comment"># 使用如下脚本下载国内镜像，并修改tag为google的tag</span></span></span><br><span class="line">set -e</span><br><span class="line"></span><br><span class="line">KUBE_VERSION=v1.16.0</span><br><span class="line">KUBE_PAUSE_VERSION=3.1</span><br><span class="line">ETCD_VERSION=3.3.15-0</span><br><span class="line">CORE_DNS_VERSION=1.6.2</span><br><span class="line"></span><br><span class="line">GCR_URL=k8s.gcr.io</span><br><span class="line">ALIYUN_URL=registry.cn-hangzhou.aliyuncs.com/google_containers</span><br><span class="line"></span><br><span class="line">images=(kube-proxy:$&#123;KUBE_VERSION&#125;</span><br><span class="line">kube-scheduler:$&#123;KUBE_VERSION&#125;</span><br><span class="line">kube-controller-manager:$&#123;KUBE_VERSION&#125;</span><br><span class="line">kube-apiserver:$&#123;KUBE_VERSION&#125;</span><br><span class="line">pause:$&#123;KUBE_PAUSE_VERSION&#125;</span><br><span class="line">etcd:$&#123;ETCD_VERSION&#125;</span><br><span class="line">coredns:$&#123;CORE_DNS_VERSION&#125;)</span><br><span class="line"></span><br><span class="line">for imageName in $&#123;images[@]&#125; ; do</span><br><span class="line">  docker pull $ALIYUN_URL/$imageName</span><br><span class="line">  docker tag  $ALIYUN_URL/$imageName $GCR_URL/$imageName</span><br><span class="line">  docker rmi $ALIYUN_URL/$imageName</span><br><span class="line">done</span><br></pre></td></tr></table></figure>
+
+<p>运行脚本，拉取镜像</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sh ./kubeadm.sh</span><br></pre></td></tr></table></figure>
+
+<p>master节点执行</p>
+<figure class="highlight plaintext"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">sudo kubeadm init \</span><br><span class="line"> --apiserver-advertise-address 192.168.0.108 \</span><br><span class="line"> --kubernetes-version=v1.16.0 \</span><br><span class="line"> --pod-network-cidr=10.244.0.0/16</span><br></pre></td></tr></table></figure>
+
+<p>注：这里的pod-network-cidr，最好不要改动，和以下的步骤是关联的</p>
+<p>结果返回：</p>
+<p>## 添加节点需要执行以下命令，可以使用命令 <code>kubeadm token create --print-join-command</code> 来获取</p>
+<p><img src="/images/image-20220203210205485.png" alt="image-20220203210205485"></p>
+<p>如果是要安装多个master节点，则初始化命令使用（未测）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init  --apiserver-advertise-address 192.168.10.20 --control-plane-endpoint 192.168.10.20  --kubernetes-version=v1.16.0  --pod-network-cidr=10.244.0.0/16  --upload-certs</span><br></pre></td></tr></table></figure>
+
+<p>添加master节点使用命令（未测）</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join 192.168.10.20:6443 --token z34zii.ur84appk8h9r3yik --discovery-token-ca-cert-hash sha256:dae426820f2c6073763a3697abeb14d8418c9268288e37b8fc25674153702801     --control-plane --certificate-key 1b9b0f1fdc0959a9decef7d812a2f606faf69ca44ca24d2e557b3ea81f415afe</span><br></pre></td></tr></table></figure>
+
+<p>注：这里的token会不同，不要直接复制。kubeadm init成功后会输出添加master节点的命令</p>
+<h4 id="坑1：kubeadm-、kubelet-版本与拉取的进行镜像版本不一致导致"><a href="#坑1：kubeadm-、kubelet-版本与拉取的进行镜像版本不一致导致" class="headerlink" title="坑1：kubeadm 、kubelet 版本与拉取的进行镜像版本不一致导致"></a><strong>坑1：</strong>kubeadm 、kubelet 版本与拉取的进行镜像版本不一致导致</h4><p>参考：<a target="_blank" rel="noopener" href="https://www.freesion.com/article/73351064854/">链接</a></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# sudo kubeadm init \</span><br><span class="line"><span class="meta">&gt;</span><span class="bash">  --apiserver-advertise-address 192.168.10.20 \</span></span><br><span class="line"><span class="bash">&gt;  --kubernetes-version=v1.16.0 \</span></span><br><span class="line"><span class="bash">&gt;  --pod-network-cidr=10.244.0.0/16</span></span><br><span class="line">this version of kubeadm only supports deploying clusters with the control plane version &gt;= 1.22.0.                                                                            Current version: v1.16.0</span><br><span class="line">To see the stack trace of this error execute with --v=5 or higher</span><br></pre></td></tr></table></figure>
+
+<p><img src="/images/image-20220202224247753.png" alt="image-20220202224247753"></p>
+<p><strong>卸载  kubeadm 、kubelet</strong> </p>
+<p><code>rpm -qa | egrep kubeadm</code>   #查看已装版本</p>
+<p><code>yum remove -y kubeadm-1.18.1 kubelet-1.18.1 kubectl-1.18.1</code></p>
+<p><strong>查看软件版本</strong></p>
+<p><code>yum list --showduplicates kubeadm --disableexcludes=kubernetes</code></p>
+<p>–disableexcludes=kubernetes        #表示只用kubernetes的yum仓库</p>
+<p><strong>指定安装</strong></p>
+<p> <code>yum -y install kubeadm-1.16.0-0 kubelet-1.16.0-0</code>  </p>
+<p><code>kubeadm version --output json</code>   #查看已装版本</p>
+<p><strong>然后重新初始化</strong></p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">kubeadm init \</span><br><span class="line"> --apiserver-advertise-address 192.168.0.108 \</span><br><span class="line"> --kubernetes-version=v1.16.0 \</span><br><span class="line"> --pod-network-cidr=10.244.0.0/16</span><br></pre></td></tr></table></figure>
+
+<h2 id="工作节点配置"><a href="#工作节点配置" class="headerlink" title="工作节点配置"></a>工作节点配置</h2><h3 id="下载kubeadm-kubelet"><a href="#下载kubeadm-kubelet" class="headerlink" title="下载kubeadm kubelet"></a>下载kubeadm kubelet</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">yum -y install kubeadm-1.16.0-0 kubelet-1.16.0-0</span><br></pre></td></tr></table></figure>
+
+<p><strong>提醒：</strong>确定节点是否有安装docker ,是否有拉取镜像，主要是 <code>k8s.gcr.io/pause:3.1</code> 否则后续flannel 、kube-proxy pod创建container 会报错拉不到镜像</p>
+<h3 id="添加节点"><a href="#添加节点" class="headerlink" title="添加节点"></a>添加节点</h3><p>节点都要运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm join 192.168.0.108:6443 --token u26z6z.2e8hakd5071koxt1     --discovery-token-ca-cert-hash sha256:bc2ef99438cf390bb6130e526fb6f939b33380a302702c4b11ddb0357d523920</span><br></pre></td></tr></table></figure>
+
+<p>如果添加节点失败，或是想重新添加，可以使用命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubeadm reset</span><br></pre></td></tr></table></figure>
+
+<p>注：不要在轻易master上使用，它会删除所有kubeadm配置<br>这时在节点上就可以使用命令查看添加的节点信息了</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master ~]# kubectl get nodes</span><br><span class="line">NAME         STATUS     ROLES    AGE   VERSION</span><br><span class="line">k8s-master   NotReady   master   45m   v1.16.0</span><br><span class="line">k8s-node1    NotReady   &lt;none&gt;   26s   v1.16.0</span><br><span class="line">k8s-node2    NotReady   &lt;none&gt;   12s   v1.16.0</span><br></pre></td></tr></table></figure>
+
+<h4 id="坑2-节点加入报错-：The-connection-to-the-server-localhost-8080-was-refused-did-you-specify-the-right-host-or-port"><a href="#坑2-节点加入报错-：The-connection-to-the-server-localhost-8080-was-refused-did-you-specify-the-right-host-or-port" class="headerlink" title="坑2:节点加入报错 ：The connection to the server localhost:8080 was refused - did you specify the right host or port?"></a>坑2:节点加入报错 ：The connection to the server localhost:8080 was refused - did you specify the right host or port?</h4><p><img src="/images/image-20220204001942099.png" alt="image-20220204001942099"></p>
+<p>解决：把master /etc/kubernetes/admin.conf copy 到node </p>
+<p> <code>scp /etc/kubernetes/admin.conf root@192.168.0.100:/etc/kubernetes/</code></p>
+<p><code>echo &quot;export KUBECONFIG=/etc/kubernetes/admin.conf&quot; &gt;&gt; ~/.bash_profile</code></p>
+<p><code>source ~/.bash_profile</code></p>
+<h3 id="安装flanneld"><a href="#安装flanneld" class="headerlink" title="安装flanneld"></a>安装flanneld</h3><p>在master上操作，拷贝配置，令kubectl可用</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">mkdir -p $HOME/.kube</span><br><span class="line">sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config</span><br><span class="line">sudo chown $(id -u):$(id -g) $HOME/.kube/config</span><br></pre></td></tr></table></figure>
+
+<p>下载flannel配置文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">wget https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml</span><br></pre></td></tr></table></figure>
+
+<p>安装flanneld</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl apply -f kube-flanneld.yaml</span><br></pre></td></tr></table></figure>
+
+<p>flanneld默认安装在kube-system Namespace中，使用以下命令查看:</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">[root@localhost ~]# kubectl -n kube-system get pods</span><br><span class="line">NAME                                            READY   STATUS    RESTARTS   AGE</span><br><span class="line">coredns-5644d7b6d9-m2nst                        1/1     Running   0          119m</span><br><span class="line">coredns-5644d7b6d9-ww6w2                        1/1     Running   0          119m</span><br><span class="line">etcd-localhost.localdomain                      1/1     Running   2          118m</span><br><span class="line">kube-apiserver-localhost.localdomain            1/1     Running   2          118m</span><br><span class="line">kube-controller-manager-localhost.localdomain   1/1     Running   2          118m</span><br><span class="line">kube-flannel-ds-r7mvt                           1/1     Running   0          77m</span><br><span class="line">kube-flannel-ds-s5758                           1/1     Running   0          77m</span><br><span class="line">kube-proxy-8x2qg                                1/1     Running   0          119m</span><br><span class="line">kube-proxy-gfm5b                                1/1     Running   0          109m</span><br><span class="line">kube-scheduler-localhost.localdomain            1/1     Running   2          118m</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<p>至此就可以看到node 状态是否都正常</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">[root@k8s-master ~]# kubectl get nodes</span><br><span class="line">NAME         STATUS   ROLES    AGE   VERSION</span><br><span class="line">k8s-master   Ready    master   79m   v1.16.0</span><br><span class="line">k8s-node1    Ready    &lt;none&gt;   34m   v1.16.0</span><br><span class="line">k8s-node2    Ready    &lt;none&gt;   34m   v1.16.0</span><br></pre></td></tr></table></figure>
+
+<p>文章参考：<a target="_blank" rel="noopener" href="https://www.cnblogs.com/zhangrui153169/p/12864134.html">链接</a>  ，还有一些坑提供出来，但是我没遇到 </p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/kubenets/"># kubenets</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+            
+            <a class="next" rel="next" href="/2022/01/30/%E5%A6%82%E4%BD%95%E4%B8%BA-Kubernetes-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E5%9C%B0%E5%8D%87%E7%BA%A7/">如何为 Kubernetes 实现原地升级</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>　
+<script>
+!
+function() {
+    function n(n, e, t) {
+        return n.getAttribute(e) || t
+    }
+    function e(n) {
+        return document.getElementsByTagName(n)
+    }
+    function t() {
+        var t = e("script"),
+        o = t.length,
+        i = t[o - 1];
+        return {
+            l: o,
+            z: n(i, "zIndex", -1),
+            o: n(i, "opacity", .5),
+            c: n(i, "color", "0,0,0"),
+            n: n(i, "count", 99)
+        }
+    }
+    function o() {
+        a = m.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+        c = m.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+    }
+    function i() {
+        r.clearRect(0, 0, a, c);
+        var n, e, t, o, m, l;
+        s.forEach(function(i, x) {
+            for (i.x += i.xa, i.y += i.ya, i.xa *= i.x > a || i.x < 0 ? -1 : 1, i.ya *= i.y > c || i.y < 0 ? -1 : 1, r.fillRect(i.x - .5, i.y - .5, 1, 1), e = x + 1; e < u.length; e++) n = u[e],
+            null !== n.x && null !== n.y && (o = i.x - n.x, m = i.y - n.y, l = o * o + m * m, l < n.max && (n === y && l >= n.max / 2 && (i.x -= .03 * o, i.y -= .03 * m), t = (n.max - l) / n.max, r.beginPath(), r.lineWidth = t / 2, r.strokeStyle = "rgba(" + d.c + "," + (t + .2) + ")", r.moveTo(i.x, i.y), r.lineTo(n.x, n.y), r.stroke()))
+        }),
+        x(i)
+    }
+    var a, c, u, m = document.createElement("canvas"),
+    d = t(),
+    l = "c_n" + d.l,
+    r = m.getContext("2d"),
+    x = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+    function(n) {
+        window.setTimeout(n, 1e3 / 45)
+    },
+    w = Math.random,
+    y = {
+        x: null,
+        y: null,
+        max: 2e4
+    };
+    m.id = l,
+    m.style.cssText = "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o,
+    e("body")[0].appendChild(m),
+    o(),
+    window.onresize = o,
+    window.onmousemove = function(n) {
+        n = n || window.event,
+        y.x = n.clientX,
+        y.y = n.clientY
+    },
+    window.onmouseout = function() {
+        y.x = null,
+        y.y = null
+    };
+    for (var s = [], f = 0; d.n > f; f++) {
+        var h = w() * a,
+        g = w() * c,
+        v = 2 * w() - 1,
+        p = 2 * w() - 1;
+        s.push({
+            x: h,
+            y: g,
+            xa: v,
+            ya: p,
+            max: 6e3
+        })
+    }
+    u = s.concat([y]),
+    setTimeout(function() {
+        i()
+    },
+    100)
+} ();
+</script>
+</html>
+	

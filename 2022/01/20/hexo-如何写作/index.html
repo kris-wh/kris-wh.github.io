@@ -13,7 +13,7 @@
 
 
 
-<title>Archives | Hexo</title>
+<title>hexo 如何写作 | Hexo</title>
 
 
 
@@ -120,85 +120,159 @@
     }
 </script>
             <div class="main">
-                <div class="post-wrap archive">
+                <div class="container">
     
     
-        
-
-        
-            <h3>2022</h3>
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/02/02/CentOS7-kubeadm%E5%BF%AB%E9%80%9F%E5%AE%89%E8%A3%85Kubernetes%E9%9B%86%E7%BE%A4/">CentOS7 kubeadm快速安装Kubernetes集群</a>
-            <span class="archive-item-date">February 2, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/30/%E5%A6%82%E4%BD%95%E4%B8%BA-Kubernetes-%E5%AE%9E%E7%8E%B0%E5%8E%9F%E5%9C%B0%E5%8D%87%E7%BA%A7/">如何为 Kubernetes 实现原地升级</a>
-            <span class="archive-item-date">January 30, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/29/%E5%A6%82%E4%BD%95%E5%BB%BA%E8%AE%BE%E6%95%85%E9%9A%9C%E5%BA%94%E6%80%A5%E4%BD%93%E7%B3%BB/">如何建设故障应急体系</a>
-            <span class="archive-item-date">January 29, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/24/%E5%B7%A5%E4%BD%9C%E4%B8%AD%E5%A6%82%E4%BD%95%E5%81%9A%E5%A5%BD%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/">工作中如何做好技术积累</a>
-            <span class="archive-item-date">January 24, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/24/%E6%8A%80%E6%9C%AF%E6%96%87%E6%A1%A3%E5%B8%B8%E7%94%A8%E6%A0%BC%E5%BC%8F/">技术文档常用格式</a>
-            <span class="archive-item-date">January 24, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/24/Docker-ce-%E5%AE%89%E8%A3%85/">Docker-ce 安装</a>
-            <span class="archive-item-date">January 24, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/20/Hexo-%E5%A6%82%E4%BD%95%E5%86%99%E4%BD%9C/">hexo 如何写作</a>
-            <span class="archive-item-date">January 20, 2022</span>
-        </article>
-    
-        
-
-        
-
-        <article class="archive-item">
-            <a class="archive-item-link" href="/2022/01/20/%E5%8F%AF%E8%A7%82%E6%B5%8B%E9%A2%86%E5%9F%9F%E7%9A%84%E4%B8%89%E9%A9%BE%E9%A9%AC%E8%BD%A6/">可观测领域的三驾马车</a>
-            <span class="archive-item-date">January 20, 2022</span>
-        </article>
-    
-    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
 </div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">hexo 如何写作</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 20, 2022&nbsp;&nbsp;23:07:28</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h3 id="新建文章"><a href="#新建文章" class="headerlink" title="新建文章"></a>新建文章</h3><p><code>hexo new &#39;hexo 如何写作&#39;</code> 编辑标题</p>
+<p><code>hexo g</code> 生成本地文件</p>
+<p><code>hexo s</code> 本地运行</p>
+<h3 id="关于图片素材"><a href="#关于图片素材" class="headerlink" title="关于图片素材"></a>关于图片素材</h3><p>可统一放置在source/images目录中，并以 <code>![](/images/image.jpg)</code> 方式引用</p>
+<h3 id="关于标签、分类无法显示"><a href="#关于标签、分类无法显示" class="headerlink" title="关于标签、分类无法显示"></a>关于标签、分类无法显示</h3><p>Hexo初始化没有tag、category页面，需要自行添加，本主题请按以下步骤进行:<br></p>
+<ol>
+<li>执行命令</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hexo new page tag</span><br><span class="line">hexo new page category</span><br></pre></td></tr></table></figure>
+
+<ol start="2">
+<li>进入页面目录</li>
+</ol>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">cd</span> <span class="built_in">source</span>/tag</span><br></pre></td></tr></table></figure>
+
+<ol start="3">
+<li>增加layout字段</li>
+</ol>
+<figure class="highlight yaml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">//</span> <span class="string">source\tag\index.md</span></span><br><span class="line"><span class="meta">---</span></span><br><span class="line"><span class="attr">title:</span> <span class="string">Tag</span></span><br><span class="line"><span class="attr">layout:</span> <span class="string">tag</span></span><br><span class="line"><span class="meta">---</span></span><br></pre></td></tr></table></figure>
+
+<ol start="4">
+<li><p>category页面同理，layout字段键值为category</p>
+</li>
+<li><p>注意！这里面最重要的就是 layout 选项，后面的参数对应的是你 主题文件夹下 layout文件夹下第一级的布局文件。比如，我的主题是用ejs写的，那么对应的就是layout/tags.ejs，如果没有，那么就会出现空白的现象！如果你的tags文件的命名时a.ejs，那么你就应该写成 layout: “a”。</p>
+</li>
+</ol>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/hexo%E4%BD%BF%E7%94%A8/"># hexo使用</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/01/24/Docker-ce-%E5%AE%89%E8%A3%85/">Docker-ce 安装</a>
+            
+            
+            <a class="next" rel="next" href="/2022/01/20/%E5%8F%AF%E8%A7%82%E6%B5%8B%E9%A2%86%E5%9F%9F%E7%9A%84%E4%B8%89%E9%A9%BE%E9%A9%AC%E8%BD%A6/">可观测领域的三驾马车</a>
+            
+        </section>
+
+
+    </article>
+</div>
+
             </div>
             <footer id="footer" class="footer">
     <div class="copyright">

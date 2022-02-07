@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+<meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <meta name="author" content="John Doe">
+
+
+
+
+
+<title>可观测领域的三驾马车 | Hexo</title>
+
+
+
+    <link rel="icon" href="/bitbug_favicon.ico">
+
+
+
+
+    <!-- stylesheets list from _config.yml -->
+    
+    <link rel="stylesheet" href="/css/style.css">
+    
+
+
+
+    <!-- scripts list from _config.yml -->
+    
+    <script src="/js/script.js"></script>
+    
+    <script src="/js/tocbot.min.js"></script>
+    
+
+
+
+    
+    
+        
+    
+
+
+<meta name="generator" content="Hexo 5.4.0"></head>
+
+<body>
+    <script>
+        // this function is used to check current theme before page loaded.
+        (() => {
+            const currentTheme = window.localStorage && window.localStorage.getItem('theme') || '';
+            const isDark = currentTheme === 'dark';
+            const pagebody = document.getElementsByTagName('body')[0]
+            if (isDark) {
+                pagebody.classList.add('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Dark"
+            } else {
+                pagebody.classList.remove('dark-theme');
+                // mobile
+                document.getElementById("mobile-toggle-theme").innerText = "· Light"
+            }
+        })();
+    </script>
+
+    <div class="wrapper">
+        <header>
+    <nav class="navbar">
+        <div class="container">
+            <div class="navbar-header header-logo"><a href="/">奔跑的灰熊</a></div>
+            <div class="menu navbar-right">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+                <input id="switch_default" type="checkbox" class="switch_default">
+                <label for="switch_default" class="toggleBtn"></label>
+            </div>
+        </div>
+    </nav>
+
+    
+    <nav class="navbar-mobile" id="nav-mobile">
+        <div class="container">
+            <div class="navbar-header">
+                <div>
+                    <a href="/">奔跑的灰熊</a><a id="mobile-toggle-theme">·&nbsp;Light</a>
+                </div>
+                <div class="menu-toggle" onclick="mobileBtn()">&#9776; Menu</div>
+            </div>
+            <div class="menu" id="mobile-menu">
+                
+                    <a class="menu-item" href="/archives">文章</a>
+                
+                    <a class="menu-item" href="/category">分类</a>
+                
+                    <a class="menu-item" href="/tag">标签</a>
+                
+            </div>
+        </div>
+    </nav>
+
+</header>
+<script>
+    var mobileBtn = function f() {
+        var toggleMenu = document.getElementsByClassName("menu-toggle")[0];
+        var mobileMenu = document.getElementById("mobile-menu");
+        if(toggleMenu.classList.contains("active")){
+           toggleMenu.classList.remove("active")
+            mobileMenu.classList.remove("active")
+        }else{
+            toggleMenu.classList.add("active")
+            mobileMenu.classList.add("active")
+        }
+    }
+</script>
+            <div class="main">
+                <div class="container">
+    
+    
+        <div class="post-toc">
+    <div class="tocbot-list">
+    </div>
+    <div class="tocbot-list-menu">
+        <a class="tocbot-toc-expand" onclick="expand_toc()">Expand all</a>
+        <a onclick="go_top()">Back to top</a>
+        <a onclick="go_bottom()">Go to bottom</a>
+    </div>
+</div>
+
+<script>
+    document.ready(
+        function () {
+            tocbot.init({
+                tocSelector: '.tocbot-list',
+                contentSelector: '.post-content',
+                headingSelector: 'h1, h2, h3, h4, h5',
+                collapseDepth: 1,
+                orderedList: false,
+                scrollSmooth: true,
+            })
+        }
+    )
+
+    function expand_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 6,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "collapse_toc()");
+        b.innerHTML = "Collapse all"
+    }
+
+    function collapse_toc() {
+        var b = document.querySelector(".tocbot-toc-expand");
+        tocbot.init({
+            tocSelector: '.tocbot-list',
+            contentSelector: '.post-content',
+            headingSelector: 'h1, h2, h3, h4, h5',
+            collapseDepth: 1,
+            orderedList: false,
+            scrollSmooth: true,
+        });
+        b.setAttribute("onclick", "expand_toc()");
+        b.innerHTML = "Expand all"
+    }
+
+    function go_top() {
+        window.scrollTo(0, 0);
+    }
+
+    function go_bottom() {
+        window.scrollTo(0, document.body.scrollHeight);
+    }
+
+</script>
+    
+
+    
+    <article class="post-wrap">
+        <header class="post-header">
+            <h1 class="post-title">可观测领域的三驾马车</h1>
+            
+                <div class="post-meta">
+                    
+
+                    
+                        <span class="post-time">
+                        Date: <a href="#">January 20, 2022&nbsp;&nbsp;22:34:05</a>
+                        </span>
+                    
+                    
+                </div>
+            
+        </header>
+
+        <div class="post-content">
+            <h2 id="构建监控分析平台方案选择"><a href="#构建监控分析平台方案选择" class="headerlink" title="构建监控分析平台方案选择"></a>构建监控分析平台方案选择</h2><p>由于数据来源广、样式杂，需求多，运维和SRE团队往往需要使用和维护多套系统，组合使用，才能满足多样的监控<br>和业务需求，常见的开源组合如：</p>
+<ul>
+<li><p>Telegraf+Influxdb+Grafana<br>Telegraf是一个轻量级的采集框架，通过丰富插件对操作系统、数据库、中间件等各类指标进行采集，配合<br>Influxdb对时序数据进行高效读写、存储、和query，最终可在grafana上进行可视化展示和交互式查询</p>
+</li>
+<li><p>Promethues<br>在云原生k8s的生态中， Prometheus基本上作为时序数据的标配，配合灵活的exporter可以非常方便完成<br>Metric采集，同时Promethues也可以和Grafana集成</p>
+</li>
+<li><p>ELK<br>在日志数据多维度查询和分析上，ELK套件是最常用的开源组件，提供快速、灵活、强大的查询能力，可满足研<br>发、运维、客服的大部分查询需求</p>
+</li>
+<li><p>Tracing 类<br>在微服务、分布式的系统中，请求调用链路复杂，没有一套合适的Tracing系统，很难进行高效的问题根因定<br>位，从最开始的Zipkin、Jeager到逐渐形成行业标准的OpenTelemetry，国内的SkyWalking都是不错的Tracing<br>系统，而这些Tracing并未提供数数据存储组件，需要配合ES或者Cassandra来存储Tracing数据</p>
+</li>
+<li><p>Kafka + Flink<br>对于数据清洗，风控等常见需求，需要构建一套实时数据通道和流式系统，支撑数据的全量实时消费，如普遍使<br>用的kafka和flink的组合</p>
+</li>
+<li><p>ClickHouse/Presto/Druid<br>在运营分析，报表等场景，为了追求更高的实时响应性，通常还会将数据导入OLAP引擎，在秒级到分钟级内完<br>成海量数据分析需求，以及各类Adhoc的查询</p>
+</li>
+</ul>
+<p>不同的组件面向不同的数据类型和处理需求，数据需要在其中进行流转，有时候同一份数据需要同时保存在多个系统<br>中，增加系统复杂度的同时，也增加了成本。</p>
+<p>当数据越来越多，使用需求越来越广的时候，保障这些组件的稳定性、满足多种业务性能需求、进行有效的成本控<br>制，又要对大量业务线进行高效支撑，都是非常繁重而又有挑战的工作。</p>
+<h2 id="监控分析平台的挑战"><a href="#监控分析平台的挑战" class="headerlink" title="监控分析平台的挑战"></a>监控分析平台的挑战</h2><p>能够维护好多套系统，并有效支持众多业务线，面临的挑战可不小，如：</p>
+<ul>
+<li><p>稳定性保障</p>
+<ul>
+<li>依赖系统：数据在多套系统中流转，系统之间又存在依赖关系，单某系统出现问题时，对其他系统造成影<br>响，如下游ES系统写入变慢后，用于缓存数据的Kafka集群存储水位变高，可能导致集群写满；</li>
+<li>Burst问题：在互联网环境下，流量Burst是非常常见的情况，对于监控分析平台也一样，当大量数据需要写<br>入系统的时候，如何保证系统不被压垮，同时保证读取功能正常运转，就非常有挑战</li>
+<li>资源隔离：不同数据的优先级有高低，如果过分依赖资源物理隔离将导致集群资源严重浪费和运维成本极大<br>提高，而当数据共享资源时，需要尽可能保证相互之间不受干扰，如某些系统中，一次超大规模的查询，可<br>能拖垮整个集群，这对于系统整体而言是不可接受的</li>
+<li>技术门槛：各类系统都有大量参数需要调优，面对不同的场景和需求，调优模式也不尽相同，需要投入大量<br>的时间和精力，根据实际情况进行对比和优化</li>
+</ul>
+</li>
+<li><p>性能可预期</p>
+<ul>
+<li>数据规模：数据规模对于系统的性能有非常大的影响，如时序数据在千万~亿级时间线下读写， ES在10亿<br>~100亿行数中的查询性能保证, 都非常有挑战</li>
+<li>Qos控制：任意一个系统，硬件资源都是有限的，需要对不同数据的qps、并发进行合理的分配和管理，必<br>要时进行降级处理，否则某个业务的使用可能导致其他业务性能受损，而这在开源组件中，一般都很少考虑</li>
+</ul>
+</li>
+<li><p>成本控制</p>
+<ul>
+<li>资源成本：各类组件的部署都需要消耗硬件资源，特别是当数据同时存在多个系统中的时候，硬件的资源消<br>耗将更加严重，另外一个常见问题是，业务往往很难准确对数据量进行估算，很多时候，会采用相对保守手<br>段，来降低系统水位，这又造成资源浪费</li>
+<li>接入成本：支持各业务线数据接入也是一个繁重的工作，涉及到数据格式的适配、环境管理、配置设置和维<br>护、资源的估算等一些列工作，需要有工具或平台帮助业务线自主完成，否则运维和SRE将陷入大量的琐事<br>中</li>
+<li>支持成本：对各系统的使用，难免会遇到各类问题，必要的技术支持必不可缺，但问题种类多样，如使用模<br>式不合适、参数配置不合理等，也有遇到开源软件本身bug导致的问题，这对于维护这些系统的运维和SRE<br>来说，又是一笔额外的代价</li>
+<li>运维成本：各系统的软硬件难免会出故障，硬件替换、缩扩容、软件版本升级，也需要投入不小的人力和精<br>力</li>
+<li>费用分摊：只有地将资源消耗清晰准确分摊到实际业务线，运维和SRE，才能更有效利用资源，制定合理的<br>预算和规划。这也就需要能提供有效计量数据进行费用分摊。</li>
+</ul>
+</li>
+</ul>
+<h2 id="实际业务场景挑战"><a href="#实际业务场景挑战" class="headerlink" title="实际业务场景挑战"></a>实际业务场景挑战</h2><p><strong>CASE</strong></p>
+<ul>
+<li>公司有100多应用，每个应用有Nginx访问日志，以及Java应用服务日志</li>
+<li>各应用日志规模变化巨大，从单日1GB到1TB不等，每天新增10TB数据，需保存7天至90天，平均15天</li>
+<li>日志数据主要用于业务监控和报警、线上问题排查，以及实时风控使用</li>
+</ul>
+<p>业务架构选项</p>
+<p><img src="/images/1565095431120.png"></p>
+<ul>
+<li>Filebeats/Logstash：实时采集数据，发送至kafka</li>
+<li>Kafka：数据临时存储，供实时Flink实时消费，和导入ES</li>
+<li>Kibana：对业务数据实时分析，进行实时监控、风控</li>
+<li>ES：日志查询分析，问题排查</li>
+</ul>
+<p>在以上看似最简单和直白的架构中，也隐藏了大量细节需要关注，以ES为例：</p>
+<ul>
+<li>容量规划：原始数据<em>膨胀系数</em>（1＋副本数）*(1＋预留空间)， 一般膨胀系数取1.1～1.3，1个副本，25%的预留（剩余空间，临时文件等），实际磁盘空间最终是原始空间的 2.75~3.5倍。如果需要开启_all 参数设置的话，数据膨胀会更严重，也需要预留更多空间</li>
+<li>冷热分离：所有数据全部保留到SSD上成本会过高，需要根据数据的重要程度和时间因素，可以将部分Index直接保存至HDD磁盘，或使用Rollover功能将Index迁移</li>
+<li>Index设置：每个应用的2类日志，分别按照时间周期性创建Index，根据数据大小合理设置shard数， 单shard以30~50GB为宜，但是各应用的日志量很难准确估计，常在遇到写入或查询问题后再调整， 然而reindex的消耗又非常大</li>
+<li>Kafka消费设置：通常使用logstash消费kafka再写入ES，需要kafka topic的patition数和logconsumer_threads相匹配，否则容易导致各partition消费不均</li>
+<li>ES参数调优：对写入吞吐，可见性延时，数据安全性，以及查询性能等多方面因素进行综合评估和权衡后，结合集群CPU、内存，对ES一些列参数进行调优，才能更好发挥ES的特性，常见的参数包括线程数、内存控制、translog设置、队列长度、各类操作间隔interval、merge参数等</li>
+</ul>
+<h2 id="监控分析平台需要解决的数据问题"><a href="#监控分析平台需要解决的数据问题" class="headerlink" title="监控分析平台需要解决的数据问题"></a>监控分析平台需要解决的数据问题</h2><p>运维和SRE为了保证业务稳定和支持业务发展，需要对大量的数据进行收集和分析，从机器硬件、网络指标到业务、<br>用户行为等多方面数据，在完成数据采集后，还需要有一套合适的系统进行转换、存储、处理、分析，满足多样的需<br>求。数据问题主要包括：</p>
+<ul>
+<li><p>数据多样</p>
+<ul>
+<li>各类系统数据：cpu、mem、net、disk等通用硬件指标，系统syslog</li>
+<li>业务黄金指标：延时、流量、错误、饱和度</li>
+<li>业务访问日志：Access Log</li>
+<li>应用日志： 如Java应用日志、错误日志</li>
+<li>用户行为数据：web click</li>
+<li>用户行为数据：web click</li>
+<li>App埋点数据：Android、IOS app中埋点统计</li>
+<li>各类框架数据：如被广泛使用的k8s框架产生的数据</li>
+<li>服务调用链：各类Tracing数据</li>
+</ul>
+</li>
+<li><p>需求多样</p>
+<p>对于收集的各类数据，运维和SRE团队不光是为了保障业务稳定，还需要支持其他业务团队进行数据的使用，对于数据的使用也是多样的，常见需求如：</p>
+<ul>
+<li>监控、报警：实时处理（流式，小批量），秒级～分钟级延时</li>
+<li>客服、问题排查：快速检索，如通过关键词过滤，秒级延时</li>
+<li>风控：实时流量处理，亚秒延时</li>
+<li>运营、分析：大规模数据分析，如OLAP场景，秒级到小时级延时</li>
+</ul>
+</li>
+<li><p>资源需求估算难</p>
+<p>对于快速发展的业务，各类数据的规模在一开始是很难准确估算的，经常遇到：</p>
+<ul>
+<li>新业务接入，数据量无准确估算参考</li>
+<li>业务快速发展，数据暴增</li>
+<li>数据使用需求变动，原有存储方式，保存时间不符合使用需求</li>
+</ul>
+</li>
+<li><p>内存问题：通常JVM 堆内存大小在32GB以内，剩余的留个OS缓存使用，如果频繁gc 会严重影响性能，甚至直<br>接导致服务不可用。</p>
+<ul>
+<li>master节点内存占用和集群中shard数直接相关，一般集群shard需要控制在10W以内，ES默认配置中，单节点shard数上限为1000，需要合理控制index和shard数量</li>
+<li>data节点的内存由索引数据规模决定，如ES的FST会长期驻留在内存，虽然在7.3及之后版本中，提供了堆外内存方式（mmap)，但缓存被系统回收又会导致查询性能下降，如果使用的是更低版本，则只能控制单节点数据大小；</li>
+</ul>
+</li>
+<li><p>查询问题：影响查询性能的因素非常多，需要花费大量时间不断试错和积累，常见的如：</p>
+<ul>
+<li>合理设置mapping，如text和keyword的选择，尽量避免无必要的nested mapping</li>
+<li>避免过大的查询范围和复杂度（过深的group by等），以免急剧消耗系统资源；对结果集大小进行限制，否则复杂的聚合查询或模糊查询等，在过大数据集上甚至直接导致oom</li>
+<li>控制segment数量，必要时进行force merge，也需要评估好force merge带来的大量IO和资源消耗filter和query的合理选择，在无需计算得分场景下，filter可以更好使用query cache，速度要明显快于query</li>
+<li>script 脚本带来的性能和稳定性问题</li>
+<li>合理使用好routing可以便得单次查询只扫描某个shard数据，提升性能</li>
+</ul>
+</li>
+<li><p>数据损坏：如果遇到异常的crash，可能导致文件损坏，在segment或translog文件受损时，shard可能无法加载，需要使用工具或手动将有问题的数据清理掉，但这也会导致部分数据丢失</p>
+</li>
+</ul>
+<p>以上是在使用和运维ES集群中，经常会遇到和需要注意的问题，稳定维护好ES集群可真不是一件容易的事情，特别<br>是当数据逐步扩大到数百TB，又有大量使用需求的情况下。同样的问题也存在其他系统中，这对于平时工作极其繁<br>忙的运维和SRE同学是不小的负担。</p>
+<p>彻底搞懂 Kubernetes 中的 Events</p>
+<p>event –&gt; kubernetes-event-exporter 采集 –&gt; Jaeger 展示</p>
+<p><img src="%E5%8F%AF%E8%A7%82%E6%B5%8B%E9%A2%86%E5%9F%9F%E7%9A%84%E4%B8%89%E9%A9%BE%E9%A9%AC%E8%BD%A6.assets/image-20220206191856092.png" alt="image-20220206191856092"></p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/tao12345666333/article/details/122227883">https://blog.csdn.net/tao12345666333/article/details/122227883</a></p>
+<p><img src="%E5%8F%AF%E8%A7%82%E6%B5%8B%E9%A2%86%E5%9F%9F%E7%9A%84%E4%B8%89%E9%A9%BE%E9%A9%AC%E8%BD%A6.assets/image-20220206191932936.png" alt="image-20220206191932936"></p>
+<p>● avesdropping：分析audit，生成trace </p>
+<p>● jaeger-collector： 接收来自eavesdropping的trace，存储到zsearch </p>
+<p>● jaeger-query：从zsearch查询trace信息，进行展示 </p>
+<p>● filebeat：采集audit日志，存储到zsearch</p>
+<p><img src="%E5%8F%AF%E8%A7%82%E6%B5%8B%E9%A2%86%E5%9F%9F%E7%9A%84%E4%B8%89%E9%A9%BE%E9%A9%AC%E8%BD%A6.assets/image-20220206192027068.png" alt="image-20220206192027068"></p>
+<p><img src="%E5%8F%AF%E8%A7%82%E6%B5%8B%E9%A2%86%E5%9F%9F%E7%9A%84%E4%B8%89%E9%A9%BE%E9%A9%AC%E8%BD%A6.assets/image-20220206192044719.png" alt="image-20220206192044719"></p>
+<p>Jaeger-分布式调用链跟踪系统理论与实战</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zuiyijiangnan/article/details/103836060?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164249881416780357227125%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=164249881416780357227125&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-11-103836060.pc_search_insert_ulrmf&amp;utm_term=Jaeger&amp;spm=1018.2226.3001.4187">https://blog.csdn.net/zuiyijiangnan/article/details/103836060?ops_request_misc=%257B%2522request%255Fid%2522%253A%2522164249881416780357227125%2522%252C%2522scm%2522%253A%252220140713.130102334..%2522%257D&amp;request_id=164249881416780357227125&amp;biz_id=0&amp;utm_medium=distribute.pc_search_result.none-task-blog-2~all~baidu_landing_v2~default-11-103836060.pc_search_insert_ulrmf&amp;utm_term=Jaeger&amp;spm=1018.2226.3001.4187</a></p>
+
+        </div>
+
+        
+            <section class="post-copyright">
+                
+                
+                
+                
+
+            </section>
+        
+        <section class="post-tags">
+            <div>
+                <span>Tag(s):</span>
+                <span class="tag">
+                    
+                    
+                        <a href="/tags/%E4%BA%91%E5%8E%9F%E7%94%9F/"># 云原生</a>
+                    
+                        <a href="/tags/%E5%8F%AF%E8%A7%82%E6%B5%8B/"># 可观测</a>
+                    
+                        
+                </span>
+            </div>
+            <div>
+                <a href="javascript:window.history.back();">back</a>
+                <span>· </span>
+                <a href="/">home</a>
+            </div>
+        </section>
+        <section class="post-nav">
+            
+                <a class="prev" rel="prev" href="/2022/01/20/Hexo-%E5%A6%82%E4%BD%95%E5%86%99%E4%BD%9C/">hexo 如何写作</a>
+            
+            
+        </section>
+
+
+    </article>
+</div>
+
+            </div>
+            <footer id="footer" class="footer">
+    <div class="copyright">
+        <span>© John Doe | Powered by <a href="https://hexo.io" target="_blank">Hexo</a> & <a href="https://github.com/Siricee/hexo-theme-Chic" target="_blank">Chic</a></span>
+    </div>
+</footer>
+
+    </div>
+</body>
+
+<script type="text/javascript" src="https://cdn.bootcss.com/canvas-nest.js/1.0.1/canvas-nest.min.js"></script>　
+<script>
+!
+function() {
+    function n(n, e, t) {
+        return n.getAttribute(e) || t
+    }
+    function e(n) {
+        return document.getElementsByTagName(n)
+    }
+    function t() {
+        var t = e("script"),
+        o = t.length,
+        i = t[o - 1];
+        return {
+            l: o,
+            z: n(i, "zIndex", -1),
+            o: n(i, "opacity", .5),
+            c: n(i, "color", "0,0,0"),
+            n: n(i, "count", 99)
+        }
+    }
+    function o() {
+        a = m.width = window.innerWidth || document.documentElement.clientWidth || document.body.clientWidth,
+        c = m.height = window.innerHeight || document.documentElement.clientHeight || document.body.clientHeight
+    }
+    function i() {
+        r.clearRect(0, 0, a, c);
+        var n, e, t, o, m, l;
+        s.forEach(function(i, x) {
+            for (i.x += i.xa, i.y += i.ya, i.xa *= i.x > a || i.x < 0 ? -1 : 1, i.ya *= i.y > c || i.y < 0 ? -1 : 1, r.fillRect(i.x - .5, i.y - .5, 1, 1), e = x + 1; e < u.length; e++) n = u[e],
+            null !== n.x && null !== n.y && (o = i.x - n.x, m = i.y - n.y, l = o * o + m * m, l < n.max && (n === y && l >= n.max / 2 && (i.x -= .03 * o, i.y -= .03 * m), t = (n.max - l) / n.max, r.beginPath(), r.lineWidth = t / 2, r.strokeStyle = "rgba(" + d.c + "," + (t + .2) + ")", r.moveTo(i.x, i.y), r.lineTo(n.x, n.y), r.stroke()))
+        }),
+        x(i)
+    }
+    var a, c, u, m = document.createElement("canvas"),
+    d = t(),
+    l = "c_n" + d.l,
+    r = m.getContext("2d"),
+    x = window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame ||
+    function(n) {
+        window.setTimeout(n, 1e3 / 45)
+    },
+    w = Math.random,
+    y = {
+        x: null,
+        y: null,
+        max: 2e4
+    };
+    m.id = l,
+    m.style.cssText = "position:fixed;top:0;left:0;z-index:" + d.z + ";opacity:" + d.o,
+    e("body")[0].appendChild(m),
+    o(),
+    window.onresize = o,
+    window.onmousemove = function(n) {
+        n = n || window.event,
+        y.x = n.clientX,
+        y.y = n.clientY
+    },
+    window.onmouseout = function() {
+        y.x = null,
+        y.y = null
+    };
+    for (var s = [], f = 0; d.n > f; f++) {
+        var h = w() * a,
+        g = w() * c,
+        v = 2 * w() - 1,
+        p = 2 * w() - 1;
+        s.push({
+            x: h,
+            y: g,
+            xa: v,
+            ya: p,
+            max: 6e3
+        })
+    }
+    u = s.concat([y]),
+    setTimeout(function() {
+        i()
+    },
+    100)
+} ();
+</script>
+</html>
+	
